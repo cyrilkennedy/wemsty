@@ -1,4 +1,4 @@
-export default function Thoughts() {
+export default function AboutPage() {
   return (
     <div>
       <h1>About WEMSTY</h1>
