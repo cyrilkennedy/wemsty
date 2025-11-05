@@ -1,0 +1,25 @@
+/* app/sphere/page.module.css */
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.skeleton {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 40px;
+}

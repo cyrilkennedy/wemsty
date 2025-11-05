@@ -1,0 +1,37 @@
+/* components/GradientButton.module.css */
+.primary {
+  background: linear-gradient(135deg, #5A00FF, #00D4FF);
+  color: white;
+  padding: 14px 32px;
+  border-radius: 32px;
+  font-weight: 600;
+  height: 56px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+
+.primary:hover {
+  box-shadow: 0 8px 32px rgba(255, 215, 0, 0.4);
+  transform: scale(1.02);
+}
+
+.ghost {
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 14px 32px;
+  border-radius: 32px;
+  font-weight: 600;
+  height: 56px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+
+.ghost:hover {
+  border-color: #FFD700;
+  color: #FFD700;
+  box-shadow: 0 8px 32px rgba(255, 215, 0, 0.4);
+}

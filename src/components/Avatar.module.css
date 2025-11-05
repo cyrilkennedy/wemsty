@@ -1,0 +1,29 @@
+/* components/Avatar.module.css */
+.avatar {
+  border-radius: 50%;
+  background: linear-gradient(135deg, #5A00FF, #00D4FF);
+  padding: 2px;
+}
+
+.inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--bg);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fallback {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #5A00FF, #00D4FF);
+}

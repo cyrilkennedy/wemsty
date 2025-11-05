@@ -1,0 +1,220 @@
+/* --------------------------------------------------------------- */
+/* 1. Global & Safe Zone (does NOT break layout)                    */
+/* --------------------------------------------------------------- */
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  margin-top: 70px;           /* ← Safe under navbar */
+  min-height: calc(100vh - 140px); /* ← Leaves room for bottom tabs */
+  box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------- */
+/* 2. Header (Avatar + Info)                                        */
+/* --------------------------------------------------------------- */
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  align-items: center;
+  text-align: center;
+}
+
+.avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* --------------------------------------------------------------- */
+/* 3. Info (Name, Bio, Stats, Buttons)                              */
+/* --------------------------------------------------------------- */
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+/* Typography */
+.displayName {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.username {
+  margin: 0;
+  color: #1da1f2;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.bio {
+  margin: 0;
+  color: #444;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.stats {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+.stats span { white-space: nowrap; }
+
+/* --------------------------------------------------------------- */
+/* 4. Edit Mode                                                     */
+/* --------------------------------------------------------------- */
+.editAvatar {
+  text-align: center;
+}
+.editAvatar small {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.editInput,
+.editTextarea {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.95rem;
+}
+.editInput:focus,
+.editTextarea:focus {
+  outline: none;
+  border-color: #1da1f2;
+}
+
+.usernameWrapper {
+  position: relative;
+}
+.error {
+  position: absolute;
+  left: 0;
+  bottom: -1.4rem;
+  font-size: 0.75rem;
+  color: #e74c3c;
+}
+
+/* --------------------------------------------------------------- */
+/* 5. Buttons                                                       */
+/* --------------------------------------------------------------- */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.shareBtn,
+.editBtn,
+.saveBtn,
+.cancelBtn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.shareBtn { background: #f0f0f0; color: #333; }
+.shareBtn:hover { background: #e0e0e0; }
+
+.editBtn,
+.saveBtn { background: #1da1f2; color: #fff; }
+.editBtn:hover,
+.saveBtn:hover { background: #0d8bd9; }
+
+.cancelBtn { background: #eee; color: #333; }
+.cancelBtn:hover { background: #ddd; }
+
+/* --------------------------------------------------------------- */
+/* 6. Posts & Misc                                                  */
+/* --------------------------------------------------------------- */
+.posts {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.noPosts {
+  text-align: center;
+  color: #777;
+  font-style: italic;
+  padding: 2.5rem 0;
+  font-size: 0.95rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem 0;
+  color: #666;
+}
+
+/* --------------------------------------------------------------- */
+/* 7. "URL copied!" Popup                                           */
+/* --------------------------------------------------------------- */
+.copyPopup {
+  position: fixed;
+  bottom: 80px;               /* ← Above bottom tabs */
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  z-index: 9999;
+  animation: fadeInOut 2s forwards;
+}
+
+@keyframes fadeInOut {
+  0%   { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  15%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+  85%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+}
+
+/* --------------------------------------------------------------- */
+/* 8. RESPONSIVE: Tablet & Desktop                                  */
+/* --------------------------------------------------------------- */
+@media (min-width: 480px) {
+  .header {
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: left;
+  }
+  .avatar {
+    width: 120px;
+    height: 120px;
+  }
+  .displayName { font-size: 1.8rem; }
+  .stats { justify-content: flex-start; }
+  .actions { justify-content: flex-start; }
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding: 2rem;
+    margin-top: 70px;
+  }
+}

@@ -1,0 +1,21 @@
+/* components/FAB.module.css */
+.fab {
+  position: fixed;
+  bottom: 96px;
+  right: 16px;
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, #5A00FF, #00D4FF);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 8px 32px rgba(255, 215, 0, 0.4);
+  z-index: 90;
+  transition: transform 0.3s;
+}
+
+.fab:hover {
+  transform: scale(1.1);
+}

@@ -1,0 +1,76 @@
+/* src/app/migrate/migrate.module.css */
+.container {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 24px;
+  background: #111;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+  font-family: system-ui, sans-serif;
+}
+
+.title {
+  font-size: 24px;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #5A00FF, #00D4FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.description {
+  color: #ccc;
+  margin: 12px 0;
+  font-size: 15px;
+}
+
+.inlineCode {
+  background: #222;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-family: 'Courier New', monospace;
+}
+
+.btn {
+  background: linear-gradient(135deg, #5A00FF, #00D4FF);
+  color: white;
+  border: none;
+  padding: 14px 32px;
+  border-radius: 32px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 20px 0;
+  transition: all 0.3s;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(90, 0, 255, 0.3);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.status {
+  margin-top: 20px;
+  padding: 12px;
+  background: #1a1a1a;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #aaa;
+}
+
+.small {
+  font-size: 13px;
+  color: #888;
+  margin-top: 20px;
+}

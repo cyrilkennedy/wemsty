@@ -1,0 +1,37 @@
+/* components/BottomNav.module.css */
+.nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: rgba(11, 11, 13, 0.8);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  display: flex;
+  z-index: 100;
+}
+
+.item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: var(--text-muted);
+  position: relative;
+}
+
+.activeIcon, .activeLabel {
+  color: var(--accent-yellow);
+}
+
+.activeBar {
+  position: absolute;
+  bottom: 0;
+  width: 60px;
+  height: 4px;
+  background: var(--accent-yellow);
+  border-radius: 2px 2px 0 0;
+}

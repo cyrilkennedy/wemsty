@@ -1,0 +1,64 @@
+/* src/app/auth/page.module.css */
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: #0B0B0D;
+}
+
+.loading {
+  color: white;
+  font-size: 18px;
+}
+
+.guest {
+  text-align: center;
+  max-width: 400px;
+}
+
+.guest h1 {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.guest p {
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 32px;
+}
+
+.joinBtn {
+  background: linear-gradient(135deg, #5A00FF, #00D4FF);
+  color: white;
+  padding: 14px 32px;
+  border-radius: 32px;
+  font-weight: 600;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.profile {
+  text-align: center;
+  max-width: 400px;
+}
+
+.avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  margin-bottom: 16px;
+}
+
+.signOutBtn {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 24px;
+  border: none;
+  cursor: pointer;
+  margin-top: 24px;
+}

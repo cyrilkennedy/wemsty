@@ -1,0 +1,23 @@
+/* components/ReactionButton.module.css */
+.button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.emoji {
+  font-size: 18px;
+}
+
+.count {
+  font-weight: 600;
+}
