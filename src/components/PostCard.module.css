@@ -1,32 +1,378 @@
 /* components/PostCard.module.css */
+
 .card {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
-  padding: 24px;
-  margin-bottom: 16px;
+  display: flex;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: transparent;
+  transition: background 0.2s;
+  cursor: pointer;
+  position: relative;
+}
+
+.card:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.sponsored {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.avatarLink {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  transition: opacity 0.2s;
+}
+
+.avatarLink:hover {
+  opacity: 0.9;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
 }
 
 .header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  text-decoration: none;
+  min-width: 0;
+}
+
+.userInfo:hover .name {
+  text-decoration: underline;
+}
+
+.nameWithBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .name {
-  font-weight: 600;
+  color: white;
+  font-weight: 700;
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+
+.handle {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.circle {
+  color: #1d9bf0;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.circle:hover {
+  text-decoration: underline;
+}
+
+.dot {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 15px;
+}
+
+.time {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.menuWrapper {
+  position: relative;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.moreBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.moreBtn:hover {
+  background: rgba(29, 155, 240, 0.1);
+  color: #1d9bf0;
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: rgba(0, 0, 0, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  min-width: 220px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  z-index: 10;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.menuOption,
+.deleteOption {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.menuOption:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.deleteOption {
+  color: #f4212e;
+}
+
+.deleteOption:hover {
+  background: rgba(244, 33, 46, 0.1);
+}
+
+.body {
+  margin-bottom: 12px;
 }
 
 .text {
-  font-size: 18px;
-  line-height: 1.6;
-  margin-bottom: 16px;
+  color: white;
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 0 0 12px 0;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.mediaWrapper {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 12px;
 }
 
 .media {
   width: 100%;
+  max-height: 500px;
+  object-fit: cover;
+  display: block;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  max-width: 425px;
+}
+
+/* NEW: Reaction Group */
+.reactionGroup {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.reactionBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 10px;
   border-radius: 16px;
-  margin-bottom: 16px;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.reactionBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.05);
+}
+
+.reactionBtn:active {
+  transform: scale(0.95);
+}
+
+.reactionBtn.active {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Heart button - Red when active */
+.reactionBtn:nth-child(1):hover,
+.reactionBtn:nth-child(1).active {
+  color: #f91880;
+}
+
+/* Fire button - Orange when active */
+.reactionBtn:nth-child(2):hover,
+.reactionBtn:nth-child(2).active {
+  color: #ff6b00;
+}
+
+/* Like button - Blue when active */
+.reactionBtn:nth-child(3):hover,
+.reactionBtn:nth-child(3).active {
+  color: #1d9bf0;
+}
+
+.reactionBtn span {
+  font-size: 13px;
+}
+
+/* Comment Button */
+.commentBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.commentBtn:hover {
+  background: rgba(29, 155, 240, 0.1);
+  color: #1d9bf0;
+}
+
+/* Sponsored Actions */
+.sponsoredActions {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.3);
+  pointer-events: none;
+}
+
+.sponsoredHeart,
+.sponsoredComment,
+.sponsoredShare {
+  font-weight: 600;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  background: transparent;
+}
+
+/* Skeleton Loading */
+.skeleton {
+  padding: 16px;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .card {
+    padding: 12px;
+  }
+
+  .name {
+    max-width: 100px;
+    font-size: 14px;
+  }
+
+  .handle,
+  .time,
+  .dot {
+    font-size: 14px;
+  }
+
+  .text {
+    font-size: 14px;
+  }
+
+  .avatarLink {
+    width: 36px;
+    height: 36px;
+  }
+
+  .actions {
+    gap: 8px;
+  }
+
+  .reactionBtn {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+
+  .commentBtn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}
+
+/* Hover states for desktop */
+@media (hover: hover) {
+  .card:hover {
+    background: rgba(255, 255, 255, 0.03);
+  }
 }

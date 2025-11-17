@@ -1,0 +1,8 @@
+/* components/ViewCount.module.css */
+.count {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #aaa;
+  font-size: 0.8rem;
+}

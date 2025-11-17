@@ -18,3 +18,22 @@ body {
 html, body {
   height: 100%;
 }
+
+/* app/globals.css */
+main {
+  padding-bottom: 80px; /* Space for bottom navbar */
+}
+
+/* app/globals.css */
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #0B0B0D;
+  color: white;
+  font-family: system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+
+main {
+  padding-bottom: 80px; /* FOR BOTTOM NAVBAR */
+}

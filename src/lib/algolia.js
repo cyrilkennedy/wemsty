@@ -1,92 +1,144 @@
 // lib/algolia.js
 import { algoliasearch } from 'algoliasearch';
 
-// Your keys (HARD-CODED for now - MOVE TO .env later)
+// ⚠️ IMPORTANT: Use Search-Only API Key for client-side
+// Admin key should NEVER be in client code
 const appId = 'ZRODUUTRLQ';
-const searchKey = '1d7e73421b0e461eb3e2c4f4a424dda2';
-const adminKey = 'ccd3eb406f23136c05804bbfdc284d75';  // ← For client-side indexing (TEMP)
+const searchKey = '1d7e73421b0e461eb3e2c4f4a424dda2'; // ✅ This is safe for client
 
-const client = algoliasearch(appId, adminKey);
-
-// Helper function to perform operations on indexes
-export const circlesIndex = {
-  saveObject: (obj) => client.saveObject({ indexName: 'circles', body: obj }),
-  search: (query) => client.search({ requests: [{ indexName: 'circles', query }] })
-};
-
-export const postsIndex = {
-  saveObject: (obj) => client.saveObject({ indexName: 'posts', body: obj }),
-  search: (query) => client.search({ requests: [{ indexName: 'posts', query }] })
-};
-
-export const usersIndex = {
-  saveObject: (obj) => client.saveObject({ indexName: 'users', body: obj }),
-  search: (query) => client.search({ requests: [{ indexName: 'users', query }] })
-};
-
-export const tagsIndex = {
-  saveObject: (obj) => client.saveObject({ indexName: 'tags', body: obj }),
-  search: (query) => client.search({ requests: [{ indexName: 'tags', query }] })
-};
+// Create search-only client
+const searchClient = algoliasearch(appId, searchKey);
 
 // Multi-index search
 export async function searchEverything(query) {
-  const results = await client.search({
-    requests: [
-      { indexName: 'circles', query },
-      { indexName: 'posts', query },
-      { indexName: 'users', query },
-      { indexName: 'tags', query }
-    ]
-  });
-  return results;
+  try {
+    const { results } = await searchClient.search({
+      requests: [
+        { indexName: 'circles', query, hitsPerPage: 5 },
+        { indexName: 'posts', query, hitsPerPage: 10 },
+        { indexName: 'users', query, hitsPerPage: 5 },
+        { indexName: 'tags', query, hitsPerPage: 5 }
+      ]
+    });
+    return { results };
+  } catch (error) {
+    console.error('Algolia search error:', error);
+    throw error;
+  }
 }
 
-// Client-side indexing (NO BACKEND)
+// Single index searches
+export async function searchPosts(query, limit = 10) {
+  const { results } = await searchClient.search({
+    requests: [{ indexName: 'posts', query, hitsPerPage: limit }]
+  });
+  return results[0].hits;
+}
+
+export async function searchUsers(query, limit = 10) {
+  const { results } = await searchClient.search({
+    requests: [{ indexName: 'users', query, hitsPerPage: limit }]
+  });
+  return results[0].hits;
+}
+
+export async function searchCircles(query, limit = 10) {
+  const { results } = await searchClient.search({
+    requests: [{ indexName: 'circles', query, hitsPerPage: limit }]
+  });
+  return results[0].hits;
+}
+
+export async function searchTags(query, limit = 10) {
+  const { results } = await searchClient.search({
+    requests: [{ indexName: 'tags', query, hitsPerPage: limit }]
+  });
+  return results[0].hits;
+}
+
+// ========== INDEXING FUNCTIONS ==========
+// ⚠️ These require Admin API Key and should run SERVER-SIDE ONLY
+// For now, we'll create a separate admin client
+
+let adminClient = null;
+
+function getAdminClient() {
+  if (!adminClient) {
+    // ⚠️ This should be in a server-side API route, not client code
+    const adminKey = 'ccd3eb406f23136c05804bbfdc284d75';
+    adminClient = algoliasearch(appId, adminKey);
+  }
+  return adminClient;
+}
+
 export async function indexPost(post) {
-  const record = {
-    objectID: post.id,
-    authorName: post.author.displayName,
-    username: post.author.username,
-    text: post.text,
-    tags: post.tags || [],
-    circle: post.circle?.name || '',
-    circleTag: post.circle?.tag || '',
-    createdAt: post.createdAt?.toISOString() || Date.now(),
-    mediaCount: post.mediaUrls?.length || 0
-  };
-  await client.saveObject({ indexName: 'posts', body: record });
+  try {
+    const client = getAdminClient();
+    const record = {
+      objectID: post.id,
+      authorName: post.author?.displayName || '',
+      username: post.author?.username || '',
+      text: post.text || '',
+      tags: post.tags || [],
+      circle: post.circle?.name || '',
+      circleTag: post.circle?.tag || '',
+      createdAt: post.createdAt?.toISOString() || new Date().toISOString(),
+      mediaCount: post.mediaUrls?.length || 0
+    };
+    await client.saveObject({ indexName: 'posts', body: record });
+    console.log('✅ Post indexed:', post.id);
+  } catch (error) {
+    console.error('Failed to index post:', error);
+  }
 }
 
 export async function indexCircle(circle) {
-  const record = {
-    objectID: circle.id,
-    name: circle.name,
-    tag: circle.tag,
-    members: circle.members,
-    live: circle.live,
-    createdBy: circle.createdBy
-  };
-  await client.saveObject({ indexName: 'circles', body: record });
+  try {
+    const client = getAdminClient();
+    const record = {
+      objectID: circle.id,
+      name: circle.name || '',
+      tag: circle.tag || '',
+      members: circle.members || 0,
+      live: circle.live || false,
+      createdBy: circle.createdBy || ''
+    };
+    await client.saveObject({ indexName: 'circles', body: record });
+    console.log('✅ Circle indexed:', circle.id);
+  } catch (error) {
+    console.error('Failed to index circle:', error);
+  }
 }
 
 export async function indexUser(user) {
-  const record = {
-    objectID: user.uid,
-    displayName: user.displayName,
-    username: user.username,
-    bio: user.bio,
-    followers: user.followers || 0,
-    following: user.following || 0
-  };
-  await client.saveObject({ indexName: 'users', body: record });
+  try {
+    const client = getAdminClient();
+    const record = {
+      objectID: user.uid,
+      displayName: user.displayName || '',
+      username: user.username || '',
+      bio: user.bio || '',
+      followers: user.followers || 0,
+      following: user.following || 0
+    };
+    await client.saveObject({ indexName: 'users', body: record });
+    console.log('✅ User indexed:', user.uid);
+  } catch (error) {
+    console.error('Failed to index user:', error);
+  }
 }
 
 export async function indexTag(tagName, count = 1) {
-  const record = {
-    objectID: tagName,
-    name: tagName,
-    count
-  };
-  await client.saveObject({ indexName: 'tags', body: record });
+  try {
+    const client = getAdminClient();
+    const record = {
+      objectID: tagName,
+      name: tagName,
+      count
+    };
+    await client.saveObject({ indexName: 'tags', body: record });
+    console.log('✅ Tag indexed:', tagName);
+  } catch (error) {
+    console.error('Failed to index tag:', error);
+  }
 }

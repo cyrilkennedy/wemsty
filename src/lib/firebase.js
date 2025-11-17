@@ -1,17 +1,18 @@
 // src/lib/firebase.js
 import { initializeApp } from 'firebase/app';
-import { 
-  getAuth, 
-  GoogleAuthProvider, 
-  signInWithPopup, 
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
   signOut,
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
+  fetchSignInMethodsForEmail,
+  updatePassword
 } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { getAnalytics } from 'firebase/analytics';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: "AIzaSyChxEcDvKxFvcifxJCzZdxknjC2lsc2wTo",
@@ -26,9 +27,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const analytics = typeof window !== 'undefined' ? getAnalytics(app) : null;
 
-// EXPORT ONCE
 export const auth = getAuth(app);
-export const db = getFirestore(app);        // ← ONLY THIS ONE
+export const db = getFirestore(app);
 export const storage = getStorage(app);
 export const googleProvider = new GoogleAuthProvider();
 
@@ -53,6 +53,22 @@ export const signInWithEmail = async (email, password) => {
 
 export const signOutUser = async () => {
   await signOut(auth);
+};
+
+export const updateUserPassword = async (newPassword) => {
+  const user = auth.currentUser;
+  if (!user) throw new Error('No user logged in');
+  await updatePassword(user, newPassword);
+};
+
+// Check if email exists
+export const checkEmailExists = async (email) => {
+  try {
+    const methods = await fetchSignInMethodsForEmail(auth, email);
+    return methods.length > 0;
+  } catch {
+    return false;
+  }
 };
 
 // ── USER PROFILE ──

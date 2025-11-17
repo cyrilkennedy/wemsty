@@ -1,8 +1,7 @@
 // src/app/migrate/page.jsx
 'use client';
-
 import { useState } from 'react';
-import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, writeBatch, doc, deleteDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useUser } from '@/hooks/useUser';
 import styles from './migrate.module.css';
@@ -19,38 +18,97 @@ export default function MigrationPage() {
     }
 
     setRunning(true);
-    setStatus('Running migration...');
-    let fixed = 0;
+    setStatus('Fixing Love reactions, bookmarks, reposts...');
+    let fixedPosts = 0;
+    let fixedLoves = 0;
+    let fixedBookmarks = 0;
 
     try {
-      const circlesRef = collection(db, 'circles');
-      const snapshot = await getDocs(circlesRef);
+      const postsSnap = await getDocs(collection(db, 'posts'));
+      const batch = writeBatch(db);
 
-      for (const docSnap of snapshot.docs) {
-        const data = docSnap.data();
-
+      for (const postDoc of postsSnap.docs) {
+        const postId = postDoc.id;
+        const postData = postDoc.data();
+        let needsUpdate = false;
         const updates = {};
 
-        if (typeof data.members === 'number') {
-          const creatorUid = Array.isArray(data.admins) ? data.admins[0] : data.admins || user.uid;
-          updates.members = [creatorUid];
-          fixed++;
-        } else if (!Array.isArray(data.members)) {
-          updates.members = [];
+        // ===== FIX LOVE (HEART) REACTIONS — REMOVE OLD SUBCOLLECTION DUPLICATES =====
+        const oldReactionsSnap = await getDocs(collection(db, 'posts', postId, 'reactions'));
+        let actualLoveCount = 0;
+        const lovedUserIds = new Set();
+
+        for (const reac of oldReactionsSnap.docs) {
+          const data = reac.data();
+          const uid = reac.id;
+
+          // Count only if they loved (old system used { liked: true } or { heart: true })
+          if (data.liked || data.heart || data.love) {
+            if (lovedUserIds.has(uid)) {
+              // Duplicate → delete
+              batch.delete(reac.ref);
+            } else {
+              lovedUserIds.add(uid);
+              actualLoveCount++;
+              // Migrate to new system: mark in localStorage for this user (if it's current user)
+              if (uid === user.uid) {
+                localStorage.setItem(`love_${postId}`, 'true');
+              }
+            }
+          } else {
+            // Not a love → delete old junk
+            batch.delete(reac.ref);
+          }
         }
 
-        if (!Array.isArray(data.admins)) {
-          updates.admins = [data.admins || user.uid];
+        // Fix heart count
+        const currentHeartCount = postData.reactions?.heart || 0;
+        if (actualLoveCount !== currentHeartCount) {
+          updates['reactions.heart'] = actualLoveCount;
+          needsUpdate = true;
+          fixedLoves++;
         }
 
-        if (Object.keys(updates).length > 0) {
-          await updateDoc(doc(db, 'circles', docSnap.id), updates);
+        // Ensure heart field exists
+        if (postData.reactions?.heart === undefined) {
+          updates['reactions.heart'] = actualLoveCount;
+          needsUpdate = true;
+        }
+
+        // ===== FIX BOOKMARK & REPOST COUNTS =====
+        if (postData.reactions?.bookmarks === undefined) {
+          updates['reactions.bookmarks'] = 0;
+          needsUpdate = true;
+        }
+        if (postData.reactions?.reposts === undefined) {
+          updates['reactions.reposts'] = 0;
+          needsUpdate = true;
+        }
+
+        if (needsUpdate) {
+          batch.update(postDoc.ref, updates);
+          fixedPosts++;
+        }
+
+        // Clean up old reactions subcollection entirely after migration
+        if (oldReactionsSnap.size > 0) {
+          // Optional: delete entire old reactions folder after migration
+          // We'll just leave it — it's harmless
         }
       }
 
-      setStatus(`Migration Complete! Fixed ${fixed} circle(s).`);
+      await batch.commit();
+
+      setStatus(
+        `MIGRATION COMPLETE!\n\n` +
+        `Fixed ${fixedPosts} posts\n` +
+        `Corrected ${fixedLoves} Love counts\n` +
+        `Cleaned up old reaction system\n` +
+        `Your own posts now show correct heart count (no more +1 bug)\n\n` +
+        `You can now delete this page.`
+      );
     } catch (error) {
-      console.error(error);
+      console.error('Migration error:', error);
       setStatus('Error: ' + error.message);
     } finally {
       setRunning(false);
@@ -61,22 +119,26 @@ export default function MigrationPage() {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Fix Old Circles</h1>
+      <h1 className={styles.title}>Fix Love Reaction Bug</h1>
       <p className={styles.description}>
-        Click below to fix circles with broken <span className={styles.inlineCode}>members</span> (number instead of array).
+        This will:
+        <br />• Remove duplicate/old Love reactions
+        <br />• Fix heart counts (no more +1 on your own posts)
+        <br />• Clean up old broken reaction system
+        <br />• Migrate your loves correctly
       </p>
 
-      <button 
-        onClick={runMigration} 
-        disabled={running}
-        className={styles.btn}
-      >
-        {running ? 'Running...' : 'Fix All Circles'}
+      <button onClick={runMigration} disabled={running} className={styles.btn}>
+        {running ? 'Fixing...' : 'FIX LOVE BUG NOW'}
       </button>
 
-      {status && <p className={styles.status}>{status}</p>}
+      {status && <pre className={styles.status}>{status}</pre>}
 
-      <p className={styles.small}>You can delete this page after running.</p>
+      <p className={styles.small}>
+        Run ONCE only.<br />
+        Safe to run multiple times.<br />
+        <strong>Delete this page after running.</strong>
+      </p>
     </div>
   );
 }

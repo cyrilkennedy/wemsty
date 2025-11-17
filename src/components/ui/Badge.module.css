@@ -1,10 +1,28 @@
 /* components/ui/Badge.module.css */
 .badge {
-  background: rgba(255, 215, 0, 0.2);
-  color: #FFD700;
+  display: inline-flex;
+  align-items: center;
   padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 12px;
+  border-radius: 9999px;
+  font-size: 13px;
   font-weight: 600;
-  border: 1px solid rgba(255, 215, 0, 0.3);
+  background: #333;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.creator {
+  background: #2563eb;
+  color: white;
+}
+
+.pro {
+  background: #e5e7eb;
+  color: #000;
+}
+
+.enterprise {
+  background: #eab308;
+  color: #000;
 }

@@ -4,6 +4,6 @@ import styles from './Timestamp.module.css';
 
 export function Timestamp({ date }) {
   if (!date) return null;
-  const time = date.toDate ? date.toDate() : date;
-  return <span className={styles.time}>{formatDistanceToNow(time, { addSuffix: true })}</span>;
+  const time = typeof date === 'object' ? date : date.toDate();
+  return <span style={{ fontSize: '0.8rem', color: '#aaa' }}>{formatDistanceToNow(time, { addSuffix: true })}</span>;
 }

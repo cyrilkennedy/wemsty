@@ -1,14 +1,14 @@
 // src/app/circles/[id]/page.jsx
 'use client';
-
 import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { collection, query, where, orderBy, onSnapshot, doc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { collection, query, where, orderBy, onSnapshot, doc, updateDoc, arrayUnion, arrayRemove, serverTimestamp, addDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { PostCard } from '@/components/PostCard';
 import { useUser } from '@/hooks/useUser';
 import styles from './page.module.css';
-import { ArrowLeft, Share2, Plus, Users, Globe, Lock, Edit, UserPlus } from 'lucide-react';
+import { ArrowLeft, Share2, Globe, Lock, Edit, UserPlus, Trash2 } from 'lucide-react';
+import { requestCircleDelete, approveCircleDelete, rejectCircleDelete } from '@/lib/circleAdmin';
 
 export default function CircleFeed() {
   const { id } = useParams();
@@ -19,34 +19,52 @@ export default function CircleFeed() {
   const [loading, setLoading] = useState(true);
   const [isMember, setIsMember] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isCreator, setIsCreator] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
- useEffect(() => {
-  if (!user || !id) return;
+  useEffect(() => {
+    if (!user || !id) return;
 
-  const circleRef = doc(db, 'circles', id);
-  const unsubCircle = onSnapshot(circleRef, (docSnap) => {
-    if (!docSnap.exists()) {
-      router.push('/circles');
-      return;
-    }
+    const circleRef = doc(db, 'circles', id);
+    const unsubCircle = onSnapshot(circleRef, (docSnap) => {
+      if (!docSnap.exists()) {
+        router.push('/circles');
+        return;
+      }
 
-    const data = docSnap.data();
+      const data = docSnap.data();
+      const members = Array.isArray(data.members) ? data.members : [];
+      const admins = Array.isArray(data.admins) ? data.admins : [];
 
-    // SAFE: Always ensure arrays
-    const members = Array.isArray(data.members) ? data.members : [];
-    const admins = Array.isArray(data.admins) ? data.admins : [];
+      const isMember = members.includes(user.uid);
+      const isAdmin = admins.includes(user.uid);
+      const isCreator = data.createdBy === user.uid;
 
-    const isMember = members.includes(user.uid);
-    const isAdmin = admins.includes(user.uid);
+      setCircle({ id: docSnap.id, ...data, members, admins });
+      setIsMember(isMember);
+      setIsAdmin(isAdmin);
+      setIsCreator(isCreator);
+      setLoading(false);
+    });
 
-    setCircle({ id: docSnap.id, ...data, members, admins });
-    setIsMember(isMember);
-    setIsAdmin(isAdmin);
-    setLoading(false);
-  });
+    const q = query(
+      collection(db, 'posts'),
+      where('circleId', '==', id),
+      where('privacy', 'in', ['circle', 'both']),
+      orderBy('createdAt', 'desc')
+    );
+    const unsubPosts = onSnapshot(q, (snap) => {
+      setPosts(snap.docs.map(d => ({
+        id: d.id,
+        ...d.data(),
+        createdAt: d.data().createdAt?.toDate()
+      })));
+    });
 
-  // ... rest unchanged
-
+    return () => {
+      unsubCircle();
+      unsubPosts();
+    };
   }, [id, user, router]);
 
   const handleJoin = async () => {
@@ -59,6 +77,19 @@ export default function CircleFeed() {
   const handlePost = (toGlobal = false) => {
     const privacy = toGlobal ? 'both' : 'circle';
     router.push(`/create?circleId=${id}&privacy=${privacy}`);
+  };
+
+  const handleDeleteRequest = async () => {
+    if (isCreator) {
+      if (confirm('Delete this circle permanently?')) {
+        await deleteDoc(doc(db, 'circles', id));
+        router.push('/circles');
+      }
+    } else {
+      await requestCircleDelete(id, user.uid);
+      alert('Delete request sent to creator.');
+    }
+    setShowDeleteModal(false);
   };
 
   if (loading) return <div className={styles.loading}>Loading...</div>;
@@ -81,6 +112,7 @@ export default function CircleFeed() {
   return (
     <div className={styles.container}>
       <button onClick={() => router.back()} className={styles.backBtn}>Back</button>
+
       <div className={styles.header}>
         <div>
           <h1>#{circle.tag}</h1>
@@ -103,6 +135,9 @@ export default function CircleFeed() {
               }} className={styles.adminBtn}>
                 <UserPlus size={16} /> Invite Admin
               </button>
+              <button onClick={() => setShowDeleteModal(true)} className={styles.dangerBtn}>
+                <Trash2 size={16} />
+              </button>
             </>
           )}
         </div>
@@ -123,6 +158,28 @@ export default function CircleFeed() {
         <button onClick={() => handlePost(false)} className={styles.fabCircle}><Lock size={24} /></button>
         <button onClick={() => handlePost(true)} className={styles.fabGlobal}><Globe size={24} /></button>
       </div>
+
+      {/* DELETE MODAL */}
+      {showDeleteModal && (
+        <div className={styles.modalOverlay} onClick={() => setShowDeleteModal(false)}>
+          <div className={styles.modal} onClick={e => e.stopPropagation()}>
+            <h3>Delete Circle?</h3>
+            {isCreator ? (
+              <p>This action cannot be undone.</p>
+            ) : (
+              <p>Request will be sent to the original creator for approval.</p>
+            )}
+            <div className={styles.modalActions}>
+              <button onClick={handleDeleteRequest} className={styles.dangerBtn}>
+                {isCreator ? 'Delete Now' : 'Request Delete'}
+              </button>
+              <button onClick={() => setShowDeleteModal(false)} className={styles.cancelBtn}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,0 +1,190 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  padding-top: 100px; /* Add space for fixed navbar (72px + extra) */
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 2rem;
+}
+
+.results {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.resultHeader {
+  padding: 1rem 0;
+  color: #71767b;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.section {
+  margin-bottom: 2.5rem;
+}
+
+.sectionTitle {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.card {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  transition: all 0.2s;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.author {
+  font-weight: 600;
+  color: white;
+}
+
+.username {
+  color: #71767b;
+  font-size: 14px;
+}
+
+.text {
+  color: #e2e8f0;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.tag {
+  font-size: 13px;
+  color: #1da1f2;
+  background: rgba(29, 161, 242, 0.1);
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.displayName {
+  font-weight: 700;
+  color: white;
+  font-size: 16px;
+  margin-bottom: 0.25rem;
+}
+
+.bio {
+  color: #94a3b8;
+  font-size: 14px;
+  margin: 0.5rem 0 0 0;
+}
+
+.stats {
+  display: flex;
+  gap: 1rem;
+  color: #71767b;
+  font-size: 13px;
+  margin-top: 0.5rem;
+}
+
+.circleName {
+  font-weight: 700;
+  color: white;
+  font-size: 16px;
+  margin-bottom: 0.25rem;
+}
+
+.circleTag {
+  color: #1da1f2;
+  font-size: 14px;
+  margin-bottom: 0.5rem;
+}
+
+.liveBadge {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.tagsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.tagCard {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s;
+}
+
+.tagCard:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.tagName {
+  color: #1da1f2;
+  font-weight: 600;
+}
+
+.tagCount {
+  color: #71767b;
+  font-size: 13px;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 1rem 0.5rem;
+  }
+  
+  .title {
+    font-size: 1.5rem;
+  }
+  
+  .tagsList {
+    grid-template-columns: 1fr;
+  }
+}

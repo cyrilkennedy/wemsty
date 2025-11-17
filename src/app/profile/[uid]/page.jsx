@@ -9,15 +9,20 @@ import { db } from '@/lib/firebase';
 import { useUser } from '@/hooks/useUser';
 import { PostCard } from '@/components/PostCard';
 import { uploadToCloudinary } from '@/lib/cloudinary';
-import styles from './page.module.css';
 import { createPortal } from 'react-dom';
+import { MessageCircle, Bookmark } from 'lucide-react';
+import styles from './page.module.css';
+import { Badge } from '@/components/ui/Badge';
+import { FollowButton } from '@/components/FollowButton';
 
 export default function ProfilePage() {
   const { uid } = useParams();
   const { user: currentUser } = useUser();
   const [profile, setProfile] = useState(null);
   const [posts, setPosts] = useState([]);
+  const [bookmarks, setBookmarks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('thoughts');
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({});
   const [usernameError, setUsernameError] = useState('');
@@ -26,12 +31,10 @@ export default function ProfilePage() {
   const fileInputRef = useRef(null);
 
   const isOwner = currentUser?.uid === uid;
-  const profileUrl = typeof window !== 'undefined'
-    ? `${window.location.origin}/profile/${uid}`
-    : '';
+  const profileUrl = typeof window !== 'undefined' ? `${window.location.origin}/profile/${uid}` : '';
 
   /* --------------------------------------------------------------- */
-  /* 1. Load profile + posts                                         */
+  /* Load Profile + Posts + Bookmarks                                */
   /* --------------------------------------------------------------- */
   useEffect(() => {
     if (!uid) return;
@@ -50,25 +53,60 @@ export default function ProfilePage() {
     };
     fetchProfile();
 
-    const q = query(
+    // Posts — USING authorUid (CORRECT)
+    const qPosts = query(
       collection(db, 'posts'),
-      where('author.uid', '==', uid),
+      where('authorUid', '==', uid),
       orderBy('createdAt', 'desc')
     );
-    const unsub = onSnapshot(q, (snap) => {
+
+    const unsubPosts = onSnapshot(qPosts, (snap) => {
       const list = snap.docs.map(d => ({
         id: d.id,
         ...d.data(),
-        createdAt: d.data().createdAt?.toDate(),
+        createdAt: d.data().createdAt?.toDate()
       }));
       setPosts(list);
-      setLoading(false);
+    }, (error) => {
+      console.error('Posts query failed:', error);
     });
-    return () => unsub();
-  }, [uid]);
+
+    // Bookmarks (only if owner)
+    let unsubBookmarks;
+    if (isOwner) {
+      const qBookmarks = query(
+        collection(db, 'users', uid, 'bookmarks'),
+        orderBy('savedAt', 'desc')
+      );
+      unsubBookmarks = onSnapshot(qBookmarks, async (snap) => {
+        const bookmarkPosts = await Promise.all(
+          snap.docs.map(async (d) => {
+            const postRef = d.data().post;
+            const postSnap = await getDoc(postRef);
+            if (!postSnap.exists()) return null;
+            return {
+              id: postSnap.id,
+              ...postSnap.data(),
+              createdAt: postSnap.data().createdAt?.toDate()
+            };
+          })
+        );
+        setBookmarks(bookmarkPosts.filter(Boolean));
+      }, (error) => {
+        console.error('Bookmarks query failed:', error);
+      });
+    }
+
+    setLoading(false);
+
+    return () => {
+      unsubPosts();
+      unsubBookmarks?.();
+    };
+  }, [uid, isOwner]);
 
   /* --------------------------------------------------------------- */
-  /* 2. Username availability check                                   */
+  /* Username Check                                                  */
   /* --------------------------------------------------------------- */
   const checkUsername = async (newName) => {
     if (!newName || newName === profile?.username) {
@@ -86,7 +124,7 @@ export default function ProfilePage() {
   };
 
   /* --------------------------------------------------------------- */
-  /* 3. Image upload (Cloudinary)                                    */
+  /* Image Upload                                                    */
   /* --------------------------------------------------------------- */
   const handleImageChange = async (e) => {
     const file = e.target.files?.[0];
@@ -103,7 +141,7 @@ export default function ProfilePage() {
   };
 
   /* --------------------------------------------------------------- */
-  /* 4. Save profile                                                 */
+  /* Save Profile                                                    */
   /* --------------------------------------------------------------- */
   const handleSave = async () => {
     if (!editForm.username) {
@@ -131,7 +169,7 @@ export default function ProfilePage() {
   };
 
   /* --------------------------------------------------------------- */
-  /* 5. Share → copy URL + tiny popup                                 */
+  /* Copy Profile Link                                               */
   /* --------------------------------------------------------------- */
   const copyProfileLink = async () => {
     try {
@@ -143,18 +181,16 @@ export default function ProfilePage() {
     }
   };
 
-  /* --------------------------------------------------------------- */
-  /* Render                                                          */
-  /* --------------------------------------------------------------- */
   if (loading) return <div className={styles.loading}>Loading…</div>;
   if (!profile) return null;
 
+  const currentPosts = activeTab === 'thoughts' ? posts : bookmarks;
+
   return (
     <>
-      {/* ==== MAIN CONTENT (safe under navbar) ==== */}
       <div className={styles.container}>
+        {/* Header */}
         <div className={styles.header}>
-          {/* Avatar */}
           {isEditing ? (
             <div className={styles.editAvatar}>
               <img
@@ -180,7 +216,6 @@ export default function ProfilePage() {
             />
           )}
 
-          {/* Info */}
           <div className={styles.info}>
             {isEditing ? (
               <>
@@ -216,51 +251,77 @@ export default function ProfilePage() {
               </>
             ) : (
               <>
-                <h1 className={styles.displayName}>{profile.displayName}</h1>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
+                  <h1 className={styles.displayName}>{profile.displayName}</h1>
+                  {profile?.monetization?.tier && (
+                    <Badge tier={profile.monetization.tier} />
+                  )}
+                </div>
                 {profile.username && <p className={styles.username}>@{profile.username}</p>}
                 <p className={styles.bio}>{profile.bio || 'No bio yet.'}</p>
               </>
             )}
-
-            <div className={styles.stats}>
-              <span><strong>{posts.length}</strong> Thoughts</span>
-              <span><strong>{profile.followers || 0}</strong> Followers</span>
-            </div>
+<div className={styles.stats}>
+  <span><strong>{posts.length}</strong> Thoughts</span>
+  <span><strong>{profile.followers || 0}</strong> Followers</span>
+  <span><strong>{profile.following || 0}</strong> Following</span>
+</div>
 
             <div className={styles.actions}>
-              <button onClick={copyProfileLink} className={styles.shareBtn}>
-                Share Profile
-              </button>
-
+              <button onClick={copyProfileLink} className={styles.shareBtn}>Share</button>
+              {!isOwner && currentUser && (
+  <FollowButton targetUid={uid} />
+)}
               {isOwner && !isEditing && (
-                <button onClick={() => setIsEditing(true)} className={styles.editBtn}>
-                  Edit Profile
-                </button>
+                <button onClick={() => setIsEditing(true)} className={styles.editBtn}>Edit</button>
               )}
               {isEditing && (
                 <>
                   <button onClick={handleSave} disabled={saving} className={styles.saveBtn}>
                     {saving ? 'Saving…' : 'Save'}
                   </button>
-                  <button onClick={() => setIsEditing(false)} className={styles.cancelBtn}>
-                    Cancel
-                  </button>
+                  <button onClick={() => setIsEditing(false)} className={styles.cancelBtn}>Cancel</button>
                 </>
               )}
             </div>
           </div>
         </div>
 
+        {/* TABS — ONLY FOR OWNER */}
+        {isOwner && (
+          <div className={styles.tabs}>
+            <button
+              onClick={() => setActiveTab('thoughts')}
+              className={activeTab === 'thoughts' ? styles.tabActive : styles.tab}
+            >
+              <MessageCircle size={20} />
+              <span>Thoughts</span>
+              {posts.length > 0 && <span className={styles.count}>{posts.length}</span>}
+            </button>
+
+            <button
+              onClick={() => setActiveTab('bookmarks')}
+              className={activeTab === 'bookmarks' ? styles.tabActive : styles.tab}
+            >
+              <Bookmark size={20} />
+              <span>Bookmarks</span>
+              {bookmarks.length > 0 && <span className={styles.count}>{bookmarks.length}</span>}
+            </button>
+          </div>
+        )}
+
+        {/* Posts */}
         <div className={styles.posts}>
-          {posts.length === 0 ? (
-            <p className={styles.noPosts}>No thoughts yet.</p>
+          {currentPosts.length === 0 ? (
+            <p className={styles.noPosts}>
+              {activeTab === 'thoughts' ? 'No thoughts yet.' : 'No bookmarks yet.'}
+            </p>
           ) : (
-            posts.map(p => <PostCard key={p.id} post={p} />)
+            currentPosts.map(p => <PostCard key={p.id} post={p} />)
           )}
         </div>
       </div>
 
-      {/* ==== URL COPIED POPUP ==== */}
       {showCopyMsg && createPortal(
         <div className={styles.copyPopup}>URL copied!</div>,
         document.body

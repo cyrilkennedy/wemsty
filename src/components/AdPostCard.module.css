@@ -1,0 +1,115 @@
+.card {
+  background: #000;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 12px;
+  max-width: 560px;
+  margin: 0 auto;
+  position: relative;
+  font-family: system-ui, -apple-system, sans-serif;
+  color: white;
+}
+
+/* SPONSORED */
+.sponsored {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #1DA1F2;
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.3px;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.userInfo {
+  flex: 1;
+}
+.nameLine {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.name {
+  font-size: 15px;
+  font-weight: 600;
+  color: white;
+}
+.badge {
+  margin-top: 1px;
+}
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13.5px;
+  color: #71767B;
+  margin-top: 1px;
+}
+.dot { color: #71767B; }
+.time { color: #71767B; }
+.moreBtn {
+  background: none;
+  border: none;
+  color: #71767B;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+  margin-left: auto;
+}
+
+/* BODY */
+.body {
+  margin: 4px 0 10px;
+}
+.text {
+  font-size: 15px;
+  line-height: 1.4;
+  color: white;
+  margin: 0;
+}
+.media {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-top: 8px;
+}
+
+/* REACTIONS */
+.reactions {
+  display: flex;
+  gap: 28px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+.reactBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: #71767B;
+  font-size: 13.5px;
+  cursor: pointer;
+  padding: 4px 0;
+}
+.reactBtn:hover { color: white; }
+.count {
+  color: inherit;
+}

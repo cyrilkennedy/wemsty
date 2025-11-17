@@ -3,6 +3,8 @@
   max-width: 600px;
   margin: 0 auto;
   padding: 16px;
+  padding-top: 80px; /* Add space for fixed navbar */
+  min-height: 100vh;
 }
 
 .title {
@@ -22,4 +24,13 @@
   text-align: center;
   color: rgba(255, 255, 255, 0.7);
   padding: 40px;
+}
+
+/* Responsive padding for mobile */
+@media (max-width: 768px) {
+  .container {
+    padding-top: 70px; /* Slightly less padding on mobile */
+    padding-left: 12px;
+    padding-right: 12px;
+  }
 }

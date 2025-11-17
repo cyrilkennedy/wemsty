@@ -236,3 +236,55 @@
 .backBtn:hover {
   color: white;
 }
+
+/* Add to existing AuthModal.module.css */
+.eyeBtn {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 8px;
+}
+.eyeBtn:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+}
+.otpInput {
+  width: 100%;
+  padding: 16px;
+  background: #2a2a2a;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  color: #ffffff;
+  font-size: 24px;
+  text-align: center;
+  letter-spacing: 8px;
+  font-weight: 600;
+  margin: 16px 0;
+}
+.otpInput:focus {
+  border-color: #FFD700;
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+}
+.resend {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  margin-top: 16px;
+}
+.resendLink {
+  background: none;
+  border: none;
+  color: #FFD700;
+  font-weight: 600;
+  cursor: pointer;
+}
+.resendLink:disabled {
+  color: rgba(255, 255, 255, 0.4);
+  cursor: not-allowed;
+}

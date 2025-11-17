@@ -1,50 +1,93 @@
-// components/Search.jsx
-'use client';
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { searchEverything } from '@/lib/algolia';
+import { X } from 'lucide-react';
 import styles from './Search.module.css';
 
-export function Search({ onResults }) {
-  const [query, setQuery] = useState('');
+export function Search({ onResults, initialQuery = '' }) {
+  const [query, setQuery] = useState(initialQuery);
   const [loading, setLoading] = useState(false);
-  const [results, setResults] = useState({});
+  const [error, setError] = useState('');
+
+  // Auto-search when initialQuery is provided
+  useEffect(() => {
+    if (initialQuery && initialQuery.trim()) {
+      handleSearch();
+    }
+  }, [initialQuery]);
 
   const handleSearch = async (e) => {
-    e.preventDefault();
+    e?.preventDefault();
     if (!query.trim()) return;
 
     setLoading(true);
+    setError('');
+    
     try {
+      console.log('🔍 Searching for:', query);
       const searchResults = await searchEverything(query);
+      console.log('📦 Raw results:', searchResults);
+      
       const formatted = {
         circles: searchResults.results[0]?.hits || [],
         posts: searchResults.results[1]?.hits || [],
         users: searchResults.results[2]?.hits || [],
         tags: searchResults.results[3]?.hits || []
       };
-      setResults(formatted);
-      onResults(formatted);
-    } catch (error) {
-      console.error('Search error:', error);
-      alert('Search failed');
+      
+      console.log('✅ Formatted results:', formatted);
+      
+      if (onResults) {
+        onResults(formatted);
+      }
+    } catch (err) {
+      console.error('❌ Search error:', err);
+      setError('Search failed: ' + err.message);
     } finally {
       setLoading(false);
     }
   };
 
+  const handleClear = () => {
+    setQuery('');
+    setError('');
+    if (onResults) {
+      onResults({ circles: [], posts: [], users: [], tags: [] });
+    }
+  };
+
   return (
-    <form onSubmit={handleSearch} className={styles.form}>
-      <input
-        placeholder="Search posts, users, circles, tags..."
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        className={styles.input}
-        disabled={loading}
-      />
-      <button type="submit" className={styles.btn} disabled={loading}>
-        {loading ? 'Searching...' : 'Search'}
-      </button>
-    </form>
+    <div className={styles.searchWrapper}>
+      <div className={styles.form}>
+        <div className={styles.inputWrapper}>
+          <input
+            placeholder="Search posts, users, circles, tags..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+            className={styles.input}
+            disabled={loading}
+            autoFocus
+          />
+          {query && (
+            <button
+              type="button"
+              onClick={handleClear}
+              className={styles.clearBtn}
+            >
+              <X size={16} />
+            </button>
+          )}
+        </div>
+        <button 
+          type="button"
+          onClick={handleSearch}
+          className={styles.btn} 
+          disabled={loading || !query.trim()}
+        >
+          {loading ? 'Searching...' : 'Search'}
+        </button>
+      </div>
+      {error && <div className={styles.error}>{error}</div>}
+    </div>
   );
 }

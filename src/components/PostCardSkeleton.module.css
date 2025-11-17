@@ -1,0 +1,32 @@
+/* Add to PostCard.module.css */
+.avatarSkeleton {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  animation: pulse 1.5s infinite;
+}
+.textSkeleton, .bodySkeleton { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.line {
+  height: 12px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 6px;
+  animation: pulse 1.5s infinite;
+}
+.mediaSkeleton {
+  height: 200px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 16px;
+  margin: 16px 0;
+  animation: pulse 1.5s infinite;
+}
+.reactionSkeleton {
+  height: 32px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 16px;
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}

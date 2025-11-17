@@ -1,0 +1,36 @@
+.page { padding: 80px 1rem; min-height: 100vh; background: #0B0B0D; color: white; }
+.header { display: flex; align-items: center; gap: 1rem; padding: 1rem; position: sticky; top: 0; background: #0B0B0D; z-index: 10; }
+.back { color: #aaa; padding: 0.5rem; border-radius: 50%; }
+.section { margin-bottom: 2rem; }
+.section h2 { color: #1da1f2; margin: 0 0 1rem; font-size: 1.1rem; }
+
+.themeGrid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; }
+.themeGrid button {
+  padding: 1rem 0.5rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 1rem;
+  color: white;
+  font-size: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+.active { border-color: #1da1f2; background: rgba(29,161,242,0.1); }
+
+.resetBtn {
+  width: 100%;
+  padding: 1rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 1rem;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.95rem;
+}
+.sent { margin-left: auto; color: #1da1f2; font-size: 0.8rem; }
+
+.link { display: flex; align-items: center; gap: 1rem; padding: 1rem; color: white; text-decoration: none; }

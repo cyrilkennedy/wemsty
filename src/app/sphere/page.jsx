@@ -1,5 +1,4 @@
-'use client'; // ← ADD THIS AT THE TOP
-// app/sphere/page.jsx
+'use client';
 import { PostCard } from '@/components/PostCard';
 import { FAB } from '@/components/FAB';
 import { usePosts } from '@/hooks/usePosts';

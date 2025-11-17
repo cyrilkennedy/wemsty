@@ -1,0 +1,14 @@
+/* components/RepostButton.module.css */
+.btn {
+  background: none;
+  border: none;
+  color: #aaa;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 1rem;
+  cursor: pointer;
+}
+.btn:hover { background: rgba(255,255,255,0.1); }
+.active { color: #10b981; }

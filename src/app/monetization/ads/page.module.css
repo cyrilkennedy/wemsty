@@ -1,0 +1,523 @@
+/* app/ads/page.module.css */
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+  padding-top: 90px;
+  color: white;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.header h1 {
+  flex: 1;
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.back {
+  color: white;
+  text-decoration: none;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.back:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.createBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #5A00FF, #00D4FF);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.createBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(90, 0, 255, 0.4);
+}
+
+.loading, .emptyState {
+  text-align: center;
+  padding: 60px 20px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.emptyState svg {
+  color: rgba(255, 255, 255, 0.3);
+  margin-bottom: 16px;
+}
+
+.emptyBtn {
+  margin-top: 20px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #5A00FF, #00D4FF);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.noteBox {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 32px;
+  text-align: center;
+}
+
+.noteBox p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+}
+
+.noAccess {
+  text-align: center;
+  padding: 80px 20px;
+  background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+  border-radius: 20px;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.noAccess svg {
+  color: #ef4444;
+  margin-bottom: 24px;
+}
+
+.noAccess h2 {
+  font-size: 28px;
+  margin-bottom: 12px;
+}
+
+.noAccess p {
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 32px;
+  font-size: 16px;
+}
+
+.upgradeBtn {
+  display: inline-block;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, #eab308, #f59e0b);
+  color: #000;
+  text-decoration: none;
+  border-radius: 12px;
+  font-weight: 700;
+  transition: transform 0.2s;
+}
+
+.upgradeBtn:hover {
+  transform: translateY(-2px);
+}
+
+/* Stats Grid */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.statCard {
+  background: linear-gradient(135deg, #1a1a1a, #252525);
+  border: 1px solid rgba(90, 0, 255, 0.2);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: all 0.3s;
+}
+
+.statCard:hover {
+  border-color: rgba(90, 0, 255, 0.5);
+  transform: translateY(-4px);
+}
+
+.statCard svg {
+  color: #00D4FF;
+}
+
+.statLabel {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0 0 4px 0;
+}
+
+.statValue {
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+}
+
+/* Section */
+.section {
+  margin-bottom: 40px;
+}
+
+.section h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* Ads List */
+.adsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 20px;
+}
+
+.adCard {
+  background: linear-gradient(135deg, #1a1a1a, #202020);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 20px;
+  transition: all 0.3s;
+}
+
+.adCard:hover {
+  border-color: rgba(90, 0, 255, 0.5);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(90, 0, 255, 0.2);
+}
+
+.adHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.adStatus {
+  padding: 4px 12px;
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.adType {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.adContent {
+  margin-bottom: 16px;
+}
+
+.adText {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.adStats {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+}
+
+.adStat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.adStat svg {
+  color: #00D4FF;
+}
+
+.adFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.adFooter span {
+  font-weight: 700;
+  color: #FFD700;
+}
+
+.topUpBtn {
+  padding: 8px 16px;
+  background: rgba(90, 0, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(90, 0, 255, 0.5);
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.topUpBtn:hover {
+  background: rgba(90, 0, 255, 0.3);
+}
+
+/* Modal */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal {
+  background: linear-gradient(135deg, #1a1a1a, #252525);
+  border: 1px solid rgba(90, 0, 255, 0.3);
+  border-radius: 20px;
+  padding: 32px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal h2 {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 24px 0;
+}
+
+.modalSection {
+  margin-bottom: 24px;
+}
+
+.modalSection label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 8px;
+}
+
+.select {
+  width: 100%;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  color: white;
+  font-size: 14px;
+}
+
+.adTypeToggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.adTypeToggle button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.adTypeToggle button.activeType {
+  background: rgba(90, 0, 255, 0.2);
+  border-color: rgba(90, 0, 255, 0.5);
+  color: white;
+}
+
+.pricingGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.pricingCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pricingCard:hover:not(:disabled) {
+  background: rgba(90, 0, 255, 0.1);
+  border-color: rgba(90, 0, 255, 0.5);
+}
+
+.pricingCard:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pricingLabel {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.pricingPrice {
+  font-size: 18px;
+  font-weight: 700;
+  color: #FFD700;
+}
+
+.closeModalBtn {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 16px;
+}
+
+.closeModalBtn:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 12px;
+    padding-top: 80px;
+  }
+
+  .header {
+    flex-wrap: wrap;
+  }
+
+  .header h1 {
+    font-size: 24px;
+  }
+
+  .adsList {
+    grid-template-columns: 1fr;
+  }
+
+  .pricingGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.createWrapper {
+  position: relative;
+}
+
+.createDropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #e1e8ed;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  z-index: 100;
+  width: 200px;
+  margin-top: 4px;
+}
+
+.createDropdown button {
+  width: 100%;
+  padding: 12px;
+  text-align: left;
+  border: none;
+  background: none;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.createDropdown button:hover {
+  background: #f7f9fa;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 12px;
+  border: 1px solid #ccd6dd;
+  border-radius: 8px;
+  font-size: 15px;
+  resize: vertical;
+}
+
+.charCount {
+  text-align: right;
+  font-size: 12px;
+  color: #536471;
+  margin-top: 4px;
+}
+
+.preview {
+  margin: 16px 0;
+  padding: 12px;
+  background: #f7f9fa;
+  border-radius: 12px;
+}
+
+.previewLabel {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.backBtn {
+  background: none;
+  border: none;
+  color: #1da1f2;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 8px;
+}
