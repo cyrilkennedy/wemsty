@@ -8,7 +8,7 @@ import styles from './BottomNav.module.css';
 
 const items = [
   { href: '/sphere', icon: Home, label: 'Home' },
-  { href: '/explore', icon: Search, label: 'Explore' },
+  // { href: '/explore', icon: Search, label: 'Explore' },
   { href: '/create', icon: PlusCircle, label: 'Create' },
   { href: '/circles', icon: Compass, label: 'Circles' },
   { href: '/profile', icon: User, label: 'Profile' },

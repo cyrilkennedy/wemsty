@@ -51,7 +51,7 @@ export function Navbar() {
 
   const mainNav = [
     { href: '/sphere', label: 'Home', icon: Home, authRequired: true },
-    { href: '/explore', label: 'Explore', icon: Compass, authRequired: true },
+    // { href: '/explore', label: 'Explore', icon: Compass, authRequired: true },
     { href: '/circles', label: 'Circles', icon: Users, authRequired: true },
     { href: '/create', label: 'Create', icon: PlusCircle, authRequired: true },
   ];
