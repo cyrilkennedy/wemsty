@@ -1,4 +1,4 @@
-// src/app/create/page.jsx
+// src/app/create/CreatePageClient.jsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -10,7 +10,7 @@ import { X, Image, Send, Globe, Lock } from 'lucide-react';
 import { searchEverything } from '@/lib/algolia';
 import styles from './page.module.css';
 
-export default function CreatePage() {
+export default function CreatePageClient() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { user, loading } = useUser();
