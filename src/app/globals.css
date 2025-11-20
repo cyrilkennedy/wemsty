@@ -37,3 +37,32 @@ html, body {
 main {
   padding-bottom: 80px; /* FOR BOTTOM NAVBAR */
 }
+
+/* GLOBAL — KILL ALL UNDERLINES & WEIRD LINES FOREVER (2025 EDITION) */
+button,
+a,
+[role="button"],
+[href],
+input[type="submit"],
+input[type="button"],
+*::after,
+*::before {
+  text-decoration: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Extra nuclear — kill any pseudo-element lines */
+button::after,
+button::before,
+a::after,
+a::before {
+  display: none !important;
+  content: none !important;
+}
+
+/* Kill tap highlight on mobile (clean look) */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
