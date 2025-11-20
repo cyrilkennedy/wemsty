@@ -1,26 +1,36 @@
 // src/app/auth/page.js
-'use client'; // ← MUST BE CLIENT (uses state)
+'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { signInWithGoogle, signOutUser } from '@/lib/firebase';
 import { useUser } from '@/hooks/useUser';
 import { AuthModal } from '@/components/AuthModal';
+import { useRouter } from 'next/navigation';
 import styles from './page.module.css';
 
 export default function AuthPage() {
   const { user, loading } = useUser();
   const [showModal, setShowModal] = useState(false);
+  const router = useRouter();
 
-  const handleSignIn = async () => {
-    try {
-      await signInWithGoogle();
-    } catch (error) {
-      alert('Sign in failed');
+  // Auto-open modal when page loads if user is not logged in
+  useEffect(() => {
+    if (!loading && !user) {
+      setShowModal(true);
     }
-  };
+  }, [loading, user]);
+
+  // Redirect to sphere if user is logged in
+  useEffect(() => {
+    if (user) {
+      router.push('/sphere');
+    }
+  }, [user, router]);
 
   const handleSignOut = async () => {
     await signOutUser();
+    router.push('/auth');
+    router.refresh();
   };
 
   if (loading) {
@@ -43,7 +53,8 @@ export default function AuthPage() {
           <h1>Join WEMSTY</h1>
           <p>Where logic meets creativity</p>
           <button onClick={() => setShowModal(true)} className={styles.joinBtn}>
-           Sign in / Sign up           </button>
+            Sign in / Sign up
+          </button>
         </div>
       )}
       <AuthModal isOpen={showModal} onClose={() => setShowModal(false)} />

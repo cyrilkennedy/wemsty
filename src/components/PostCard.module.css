@@ -1,14 +1,12 @@
-/* components/PostCard.module.css */
-
 .card {
   display: flex;
   gap: 12px;
   padding: 12px 16px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   background: transparent;
-  transition: background 0.2s;
   cursor: pointer;
   position: relative;
+  transition: background 0.2s;
 }
 
 .card:hover {
@@ -17,29 +15,28 @@
 
 .sponsored {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  font-size: 0.6875rem;
+  top: 8px;
+  right: 12px;
+  font-size: 11px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.5);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.6);
   background: rgba(255, 255, 255, 0.1);
-  padding: 0.25rem 0.5rem;
+  padding: 4px 8px;
   border-radius: 4px;
 }
 
-.avatarLink {
+/* PERFECT AVATAR WRAPPER */
+.avatarWrapper {
+  display: block;
   flex-shrink: 0;
-  width: 40px;
-  height: 40px;
+  margin-top: 2px;
+  line-height: 0;
   border-radius: 50%;
   overflow: hidden;
-  transition: opacity 0.2s;
 }
 
-.avatarLink:hover {
-  opacity: 0.9;
+.avatarWrapper:hover {
+  opacity: 0.92;
 }
 
 .main {
@@ -49,8 +46,8 @@
 
 .header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: flex-start;
   margin-bottom: 4px;
 }
 
@@ -60,7 +57,7 @@
   gap: 6px;
   flex-wrap: wrap;
   text-decoration: none;
-  min-width: 0;
+  color: inherit;
 }
 
 .userInfo:hover .name {
@@ -80,238 +77,153 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 150px;
+  max-width: 160px;
 }
 
-.handle {
-  color: rgba(255, 255, 255, 0.5);
+.handle, .time, .dot {
+  color: #71767b;
   font-size: 15px;
-  white-space: nowrap;
 }
 
 .circle {
   color: #1d9bf0;
-  font-size: 15px;
   font-weight: 500;
   text-decoration: none;
-  transition: color 0.2s;
 }
 
 .circle:hover {
   text-decoration: underline;
 }
 
-.dot {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 15px;
-}
-
-.time {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 15px;
-  white-space: nowrap;
-}
-
-.menuWrapper {
-  position: relative;
-  margin-left: auto;
-  flex-shrink: 0;
-}
-
-.moreBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  background: transparent;
-  border: none;
-  border-radius: 50%;
-  color: rgba(255, 255, 255, 0.5);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.moreBtn:hover {
-  background: rgba(29, 155, 240, 0.1);
-  color: #1d9bf0;
-}
-
-.dropdown {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background: rgba(0, 0, 0, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  min-width: 220px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
-  z-index: 10;
-  overflow: hidden;
-  margin-top: 4px;
-}
-
-.menuOption,
-.deleteOption {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  padding: 12px 16px;
-  background: none;
-  border: none;
-  color: white;
-  font-size: 15px;
-  font-weight: 500;
-  text-align: left;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.menuOption:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.deleteOption {
-  color: #f4212e;
-}
-
-.deleteOption:hover {
-  background: rgba(244, 33, 46, 0.1);
-}
-
 .body {
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .text {
-  color: white;
   font-size: 15px;
-  line-height: 1.5;
-  margin: 0 0 12px 0;
+  line-height: 1.4;
   word-wrap: break-word;
   white-space: pre-wrap;
 }
 
 .mediaWrapper {
-  border-radius: 16px;
+  margin-top: 12px;
+  border-radius: 20px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  margin-top: 12px;
 }
 
 .media {
   width: 100%;
   max-height: 500px;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
+  background: #000;
+  border-radius: 20px;
 }
 
+/* CLEAN ACTION BAR */
 .actions {
   display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-top: 8px;
+  justify-content: space-between;
   max-width: 425px;
+  padding: 8px 0;
+  border-top: 1px solid #2f3336;
+  margin-top: 8px;
 }
 
-/* NEW: Reaction Group */
-.reactionGroup {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 20px;
-  padding: 2px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.reactionBtn {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+.actionBtn {
   background: none;
   border: none;
+  color: #71767b;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 13px;
-  font-weight: 600;
-  padding: 6px 10px;
-  border-radius: 16px;
-  transition: all 0.2s;
-  position: relative;
-}
-
-.reactionBtn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  transform: scale(1.05);
-}
-
-.reactionBtn:active {
-  transform: scale(0.95);
-}
-
-.reactionBtn.active {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-/* Heart button - Red when active */
-.reactionBtn:nth-child(1):hover,
-.reactionBtn:nth-child(1).active {
-  color: #f91880;
-}
-
-/* Fire button - Orange when active */
-.reactionBtn:nth-child(2):hover,
-.reactionBtn:nth-child(2).active {
-  color: #ff6b00;
-}
-
-/* Like button - Blue when active */
-.reactionBtn:nth-child(3):hover,
-.reactionBtn:nth-child(3).active {
-  color: #1d9bf0;
-}
-
-.reactionBtn span {
-  font-size: 13px;
-}
-
-/* Comment Button */
-.commentBtn {
+  padding: 10px;
+  border-radius: 50%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 4px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: rgba(255, 255, 255, 0.5);
   font-size: 13px;
-  font-weight: 600;
-  padding: 8px 12px;
-  border-radius: 8px;
+  font-weight: 500;
   transition: all 0.2s;
 }
 
-.commentBtn:hover {
+.actionBtn:hover {
   background: rgba(29, 155, 240, 0.1);
   color: #1d9bf0;
 }
 
-/* Sponsored Actions */
-.sponsoredActions {
-  display: flex;
-  gap: 1.5rem;
-  align-items: center;
-  font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.3);
-  pointer-events: none;
+.actionBtn span {
+  color: inherit;
 }
 
-.sponsoredHeart,
-.sponsoredComment,
-.sponsoredShare {
-  font-weight: 600;
+.loved, .loved:hover {
+  color: #f91880 !important;
+  background: rgba(249, 24, 128, 0.1) !important;
+}
+
+.active {
+  color: #00ba7c;
+}
+
+.active:hover {
+  background: rgba(0, 186, 124, 0.1);
+}
+
+.bookmarked {
+  color: #ffd60a;
+}
+
+.menuWrapper {
+  position: relative;
+}
+
+.moreBtn {
+  background: none;
+  border: none;
+  color: #71767b;
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.moreBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dropdown {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background: #000;
+  border: 1px solid #2f3336;
+  border-radius: 12px;
+  padding: 8px 0;
+  min-width: 200px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}
+
+.menuOption, .deleteOption {
+  width: 100%;
+  text-align: left;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.menuOption:hover, .deleteOption:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.deleteOption {
+  color: #f91880;
 }
 
 .overlay {
@@ -321,58 +233,168 @@
   background: transparent;
 }
 
-/* Skeleton Loading */
 .skeleton {
-  padding: 16px;
-  color: rgba(255, 255, 255, 0.5);
+  padding: 20px;
   text-align: center;
-  font-size: 14px;
+  color: #71767b;
 }
 
-/* Responsive */
+/* Mobile */
 @media (max-width: 768px) {
-  .card {
-    padding: 12px;
-  }
+  .card { padding: 12px; }
+  .name { max-width: 120px; }
+}
 
-  .name {
-    max-width: 100px;
-    font-size: 14px;
-  }
+/* Keep everything you had, just replace these */
 
-  .handle,
-  .time,
-  .dot {
-    font-size: 14px;
-  }
+.mediaWrapper {
+  margin-top: 12px;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: #000;
+}
 
-  .text {
-    font-size: 14px;
-  }
+.media {
+  width: 100%;
+  max-height: 510px;
+  object-fit: contain;
+  display: block;
+  background: #000;
+}
 
-  .avatarLink {
-    width: 36px;
-    height: 36px;
-  }
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0 4px;
+  max-width: 425px;
+}
 
-  .actions {
-    gap: 8px;
-  }
-
-  .reactionBtn {
-    padding: 6px 8px;
-    font-size: 12px;
-  }
-
-  .commentBtn {
-    padding: 6px 10px;
-    font-size: 12px;
+.reactionBtn, .commentBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: #71767b;
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition:hover {
+    background: rgba(255,255,255,0.1);
   }
 }
 
-/* Hover states for desktop */
-@media (hover: hover) {
-  .card:hover {
-    background: rgba(255, 255, 255, 0.03);
+.commentBtn:hover { background: rgba(29,155,240,0.1); color: #1d9bf0; }
+.loved { color: #f91880 !important; }
+.active { color: #00ba7c !important; }
+.bookmarked { color: #ffd60a !important; }
+/* MAIN POST AVATAR — 100% REAL X/TWITTER 2025 LOOK */
+.avatarWrapper {
+  display: block;
+  flex-shrink: 0;
+  width: 48px;           /* Desktop: 48px — exact X size */
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  line-height: 0;
+  margin-top: 2px;       /* Perfect alignment with username */
+  transition: all 0.2s ease;
+}
+
+.avatarWrapper:hover {
+  opacity: 0.92;
+  transform: scale(1.02);
+}
+
+/* Mobile: X shrinks main post avatars to 40px */
+@media (max-width: 768px) {
+  .avatarWrapper {
+    width: 40px !important;
+    height: 40px !important;
+  }
+}
+
+/* WRAPPER — this makes dropdown appear under the button */
+.postMenuWrapper {
+  position: relative;
+  margin-left: auto;
+}
+
+/* Three-dot button */
+.moreBtn {
+  background: none;
+  border: none;
+  border-radius: 50%;
+  padding: 8px;
+  cursor: pointer;
+  color: #71767b;
+  transition: background 0.2s;
+}
+
+.moreBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  z-index: 49;
+}
+
+/* Dropdown — perfect X style */
+.dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  background: #000;
+  border: 1px solid #2f3336;
+  border-radius: 12px;
+  min-width: 220px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+  z-index: 50;
+  animation: slideDown 0.18s ease-out;
+}
+
+.dropdown button {
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  color: #e7e9ea;
+  font-size: 15px;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.dropdown button:hover {
+  background: #16181c;
+}
+
+.delete {
+  color: #f91880 !important;
+}
+
+.delete:hover {
+  background: rgba(249, 24, 128, 0.15) !important;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

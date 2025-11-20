@@ -1,27 +1,25 @@
 // src/lib/comments.js
 import { db } from '@/lib/firebase';
-import { collection, addDoc, serverTimestamp, doc } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, doc, updateDoc, increment } from 'firebase/firestore';
 
 export const addComment = async (postId, text, author) => {
   const commentsRef = collection(db, 'posts', postId, 'comments');
-  return await addDoc(commentsRef, {
+  
+  // Add the comment
+  await addDoc(commentsRef, {
     text,
     authorUid: author.uid,
-    authorName: author.displayName,
-    authorPhoto: author.photoURL,
+    authorDisplayName: author.displayName || 'User',
+    authorUsername: author.username || 'user',
+    authorPhotoURL: author.photoURL || null,
+    authorTier: author.monetization?.tier || null,
     createdAt: serverTimestamp(),
-    likes: 0
+    reactions: { heart: 0 }
   });
-};
 
-export const addReply = async (postId, commentId, text, author) => {
-  const repliesRef = collection(db, 'posts', postId, 'comments', commentId, 'replies');
-  return await addDoc(repliesRef, {
-    text,
-    authorUid: author.uid,
-    authorName: author.displayName,
-    authorPhoto: author.photoURL,
-    createdAt: serverTimestamp(),
-    likes: 0
+  // CRITICAL: Increment commentCount on the main post
+  const postRef = doc(db, 'posts', postId);
+  await updateDoc(postRef, {
+    commentCount: increment(1)
   });
 };

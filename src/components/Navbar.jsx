@@ -32,12 +32,14 @@ export function Navbar() {
   const { user } = useUser();
   const router = useRouter();
 
-  const handleSignOut = async () => {
-    await signOutUser();
-    setOpen(false);
-    setShowSettings(false);
-  };
-
+ // components/Navbar.jsx - Update handleSignOut function
+const handleSignOut = async () => {
+  await signOutUser();
+  setOpen(false);
+  setShowSettings(false);
+  router.push('/auth'); // Add this line to redirect
+  router.refresh(); // Force refresh to clear user state
+};
   const handleNavClick = (href) => {
     if (!user && href !== '/') {
       setShowAuthModal(true);

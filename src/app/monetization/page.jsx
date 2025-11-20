@@ -8,6 +8,7 @@ import { subscribeToPlan, getPlanDetails } from '@/lib/paystack';
 import { ArrowLeft, CheckCircle, Lock, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 import styles from './page.module.css';
+import { serverTimestamp } from 'firebase/firestore';
 
 export default function MonetizationPage() {
   const { user } = useUser();
@@ -36,50 +37,66 @@ export default function MonetizationPage() {
     const ref = `wemsty_${Date.now()}_${user.uid}`;
 
     const handler = window.PaystackPop.setup({
-      key: process.env.NEXT_PUBLIC_PAYSTACK_KEY,
-      email: user.email,
-      amount: plan.amount * 100,
-      currency: 'NGN',
-      ref,
-      metadata: { planId, uid: user.uid },
-      callback: (response) => {
-        verifyAndActivate(response, planId);
-      },
-      onClose: () => setLoadingPlan(null),
-    });
+  key: process.env.NEXT_PUBLIC_PAYSTACK_KEY,
+  email: user.email,
+  amount: plan.amount * 100,
+  currency: 'NGN',
+  ref,
+  metadata: { planId, uid: user.uid },
+  // ADD THIS LINE — FORCES TEST MODE CARD ONLY
+  channels: ['card'],
+  callback: (response) => {
+    verifyAndActivate(response, planId);
+  },
+  onClose: () => setLoadingPlan(null),
+});
     handler.openIframe();
   };
+// ONLY CHANGE THESE PARTS — rest of your file stays EXACTLY the same
 
-  const verifyAndActivate = async (response, planId) => {
-    try {
-      const res = await fetch('/api/paystack/verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          reference: response.reference,
-          expectedAmount: getPlanDetails(planId).amount,
-        }),
+// In src/app/monetization/page.jsx - replace verifyAndActivate function with this:
+
+const verifyAndActivate = async (response, planId) => {
+  try {
+    // 1️⃣ Verify with backend
+    const res = await fetch('/api/paystack/verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        reference: response.reference,
+        expectedAmount: getPlanDetails(planId).amount,
+        uid: user.uid,
+        planId: planId,
+      }),
+    });
+
+    const verifyRes = await res.json();
+
+    if (verifyRes.success) {
+      // 2️⃣ Write to Firestore as authenticated client
+      const userRef = doc(db, 'users', user.uid);
+      await updateDoc(userRef, {
+        'monetization.tier': verifyRes.monetization.tier,
+        'monetization.active': verifyRes.monetization.active,
+        'monetization.expiresAt': verifyRes.monetization.expiresAt,
+        'monetization.updatedAt': serverTimestamp(), // Use server timestamp
+        'monetization.lastReference': verifyRes.monetization.lastReference,
       });
-      const verifyRes = await res.json();
 
-      if (verifyRes.success) {
-        const result = await subscribeToPlan(user.uid, planId, response.reference);
-        if (result.success) {
-          await fetchUserData();
-          setShowSuccess(true);
-          setTimeout(() => setShowSuccess(false), 5000);
-        } else {
-          alert('Activation failed: ' + result.error);
-        }
-      } else {
-        alert('Payment failed: ' + verifyRes.error);
-      }
-    } catch (error) {
-      alert('Error: ' + error.message);
-    } finally {
-      setLoadingPlan(null);
+      // 3️⃣ Update UI
+      await fetchUserData();
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 5000);
+    } else {
+      alert('Payment failed: ' + verifyRes.error);
     }
-  };
+  } catch (error) {
+    console.error('Verification error:', error);
+    alert('Error: ' + error.message);
+  } finally {
+    setLoadingPlan(null);
+  }
+};
 
   const handleUnsubscribe = async () => {
     if (!confirm('Are you sure you want to unsubscribe? No refunds will be issued.')) return;

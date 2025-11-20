@@ -1,6 +1,6 @@
 // src/lib/reactions.js
 import { db, auth } from '@/lib/firebase';
-import { doc, setDoc, deleteDoc, getDoc, updateDoc, increment } from 'firebase/firestore';
+import { doc, setDoc, deleteDoc, getDoc, runTransaction } from 'firebase/firestore';
 
 // ========== UNIFIED LOAD ALL REACTIONS ==========
 export async function getUserReactions(postId) {
@@ -10,7 +10,6 @@ export async function getUserReactions(postId) {
   }
 
   try {
-    // Load all 3 reactions in parallel
     const [reactionSnap, repostSnap, bookmarkSnap] = await Promise.all([
       getDoc(doc(db, 'posts', postId, 'reactions', user.uid)),
       getDoc(doc(db, 'users', user.uid, 'reposts', postId)),
@@ -18,7 +17,7 @@ export async function getUserReactions(postId) {
     ]);
 
     return {
-      liked: reactionSnap.exists() && reactionSnap.data().liked,
+      liked: reactionSnap.exists() && reactionSnap.data().liked === true,
       reposted: repostSnap.exists(),
       bookmarked: bookmarkSnap.exists()
     };
@@ -28,49 +27,45 @@ export async function getUserReactions(postId) {
   }
 }
 
-// ========== TOGGLE LIKE ==========
+// ========== TOGGLE LIKE WITH TRANSACTION ==========
 export async function toggleLike(postId) {
   const user = auth.currentUser;
   if (!user) throw new Error('Sign in to like');
 
   const reacRef = doc(db, 'posts', postId, 'reactions', user.uid);
   const postRef = doc(db, 'posts', postId);
-  const snap = await getDoc(reacRef);
-  const isLiked = snap.exists() && snap.data().liked;
 
-  if (isLiked) {
-    await deleteDoc(reacRef);
-    await updateDoc(postRef, { 'reactions.likes': increment(-1) });
-  } else {
-    await setDoc(reacRef, { liked: true }, { merge: true });
-    await updateDoc(postRef, { 'reactions.likes': increment(1) });
+  try {
+    await runTransaction(db, async (transaction) => {
+      const reacSnap = await transaction.get(reacRef);
+      const postSnap = await transaction.get(postRef);
+      
+      if (!postSnap.exists()) {
+        throw new Error('Post not found');
+      }
+
+      const isLiked = reacSnap.exists() && reacSnap.data().liked === true;
+      const currentLikes = postSnap.data()?.reactions?.likes || 0;
+
+      if (isLiked) {
+        // Unlike
+        transaction.delete(reacRef);
+        transaction.update(postRef, { 
+          'reactions.likes': Math.max(0, currentLikes - 1) 
+        });
+      } else {
+        // Like
+        transaction.set(reacRef, { 
+          liked: true, 
+          createdAt: new Date() 
+        });
+        transaction.update(postRef, { 
+          'reactions.likes': currentLikes + 1 
+        });
+      }
+    });
+  } catch (error) {
+    console.error('Toggle like error:', error);
+    throw error;
   }
-}
-
-// ========== LEGACY FUNCTIONS (DEPRECATED) ==========
-export async function toggleBookmark(postId) {
-  console.warn('Use toggleBookmark from @/lib/bookmarks instead');
-  const user = auth.currentUser;
-  if (!user) throw new Error('Sign in to bookmark');
-
-  const reacRef = doc(db, 'posts', postId, 'reactions', user.uid);
-  const postRef = doc(db, 'posts', postId);
-  const snap = await getDoc(reacRef);
-  const isBookmarked = snap.exists() && snap.data().bookmarked;
-
-  if (isBookmarked) {
-    await deleteDoc(reacRef);
-    await updateDoc(postRef, { 'reactions.bookmarks': increment(-1) });
-  } else {
-    await setDoc(reacRef, { bookmarked: true }, { merge: true });
-    await updateDoc(postRef, { 'reactions.bookmarks': increment(1) });
-  }
-}
-
-export async function getUserReaction(postId) {
-  console.warn('Use getUserReactions (plural) for better performance');
-  const user = auth.currentUser;
-  if (!user) return { liked: false, bookmarked: false };
-  const snap = await getDoc(doc(db, 'posts', postId, 'reactions', user.uid));
-  return snap.exists() ? snap.data() : { liked: false, bookmarked: false };
 }

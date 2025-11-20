@@ -1,0 +1,24 @@
+/* src/components/RepostIndicator.module.css */
+.indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.icon {
+  color: #00D4FF;
+}
+
+.link {
+  color: #FFD700;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.link:hover {
+  text-decoration: underline;
+}

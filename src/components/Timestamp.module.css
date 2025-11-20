@@ -1,5 +1,9 @@
-/* components/Timestamp.module.css */
 .time {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 15px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.time:hover {
+  text-decoration: underline;
 }

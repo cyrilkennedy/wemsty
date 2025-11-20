@@ -1,0 +1,226 @@
+.commentlist_container {
+  border-top: 1px solid #2f3336;
+  background: #000;
+}
+
+.commentlist_item {
+  display: flex;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #2f3336;
+}
+
+.commentlist_item:hover {
+  background: #080808;
+}
+
+.commentlist_content {
+  flex: 1;
+  min-width: 0;
+}
+
+.commentlist_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.commentlist_user {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.commentlist_name_link {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.commentlist_name {
+  font-weight: 700;
+  color: #fff;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.commentlist_username, .commentlist_time {
+  font-size: 15px;
+  color: #71767b;
+}
+
+.commentlist_replying {
+  color: #1d9bf0;
+  font-size: 15px;
+  margin: 4px 0 8px;
+}
+
+.commentlist_text {
+  font-size: 15px;
+  line-height: 1.4;
+  color: #fff;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  margin-bottom: 8px;
+}
+
+.commentlist_media {
+  max-width: 100%;
+  height: auto;
+  border-radius: 16px;
+  margin-top: 12px;
+  border: 1px solid #2f3336;
+}
+
+.commentlist_actions {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  margin-top: 8px;
+}
+
+.commentlist_actions button {
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 50%;
+  color: #71767b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.commentlist_actions button:hover {
+  background: rgba(29,155,240,0.1);
+  color: #1d9bf0;
+}
+
+.commentlist_liked {
+  color: #f91880 !important;
+}
+
+.commentlist_liked svg {
+  fill: #f91880 !important;
+}
+
+.commentlist_count {
+  font-size: 13px;
+}
+
+.commentlist_loading {
+  padding: 40px;
+  text-align: center;
+  color: #71767b;
+}
+
+.commentlist_avatar_link {
+  display: block;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  /* overflow: hidden;        important for clean circle crop */
+  flex-shrink: 0;
+  transition: opacity 0.2s;
+  /* background: #000;        optional – gives dark border like your screenshot */
+}
+
+.commentlist_avatar_link img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;       /* makes the image fill circle nicely */
+  object-position: center; /* centers the subject */
+}
+
+.commentlist_avatar_link:hover {
+  opacity: 0.9;
+}
+
+.commentlist_media_wrapper {
+  margin: 12px 0 8px 0;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #000;
+  display: flex;
+  justify-content: center;
+}
+
+.commentlist_media {
+  max-width: 100%;
+  height: auto;
+  border-radius: 18px;
+  border: 1px solid #2f3336;
+  display: block;
+  object-fit: contain;
+  background: #000;
+  transition: all 0.2s ease;
+}
+
+.commentlist_media:hover {
+  border-color: rgba(29, 155, 240, 0.6);
+  transform: scale(1.01);
+}
+
+/* Menu & Delete */
+.menuWrapper {
+  position: relative;
+}
+
+.menuBtn {
+  background: none;
+  border: none;
+  color: #71767b;
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.menuBtn:hover {
+  background: rgba(29, 155, 240, 0.1);
+  color: #1d9bf0;
+}
+
+.dropdown {
+  position: absolute;
+  top: 30px;
+  right: 0;
+  background: #000;
+  border: 1px solid #2f3336;
+  border-radius: 12px;
+  padding: 8px 0;
+  min-width: 160px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  z-index: 20;
+}
+
+.deleteOption {
+  width: 100%;
+  text-align: left;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  color: #f91880;
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: background 0.2s;
+}
+
+.deleteOption:hover {
+  background: rgba(249, 24, 128, 0.1);
+}

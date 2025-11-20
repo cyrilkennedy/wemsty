@@ -72,20 +72,26 @@ export const checkEmailExists = async (email) => {
 };
 
 // ── USER PROFILE ──
+
 export const ensureUserProfile = async (user) => {
   const userRef = doc(db, 'users', user.uid);
   const docSnap = await getDoc(userRef);
   if (!docSnap.exists()) {
     await setDoc(userRef, {
       uid: user.uid,
-      displayName: user.displayName || 'User',
+      displayName: user.displayName || user.email?.split('@')[0] || 'User',
       email: user.email,
+      username: user.email?.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '') || `user${Date.now()}`,
       photoURL: user.photoURL || null,
       bio: 'Hey, I\'m using WEMSTY!',
-      createdAt: new Date().toISOString(),
+      createdAt: serverTimestamp(), // Use serverTimestamp instead of new Date()
       postsCount: 0,
       followers: 0,
-      following: 0
+      following: 0,
+      emailVerified: user.emailVerified || false
     });
   }
 };
+
+
+

@@ -16,8 +16,8 @@ import styles from './AuthModal.module.css';
 
 export function AuthModal({ isOpen, onClose }) {
   const router = useRouter();
-  const [step, setStep] = useState('initial'); // initial | email | otp | newPassword
-  const [mode, setMode] = useState('signin');   // signin | signup | reset
+  const [step, setStep] = useState('initial');
+  const [mode, setMode] = useState('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -85,15 +85,32 @@ export function AuthModal({ isOpen, onClose }) {
   const handleOTP = async () => {
     if (otp.length !== 6) return setError('Enter 6-digit code');
     setLoading(true);
-    const valid = await verifyOTP(email, otp);
-    if (!valid) {
-      setError('Invalid or expired code');
+    setError('');
+    
+    try {
+      const valid = await verifyOTP(email, otp);
+      if (!valid) {
+        setError('Invalid or expired code');
+        setLoading(false);
+        return;
+      }
+      
+      if (mode === 'reset') {
+        setStep('newPassword');
+      } else {
+        // Close modal first, then redirect
+        onClose();
+        // Small delay to ensure modal closes before navigation
+        setTimeout(() => {
+          router.push('/sphere');
+          router.refresh(); // Force refresh to update user state
+        }, 100);
+      }
+    } catch (err) {
+      setError(err.message || 'Verification failed');
+    } finally {
       setLoading(false);
-      return;
     }
-    if (mode === 'reset') setStep('newPassword');
-    else router.push('/sphere');
-    setLoading(false);
   };
 
   const handleResetPassword = async (e) => {
@@ -105,6 +122,7 @@ export function AuthModal({ isOpen, onClose }) {
       await updateUserPassword(newPassword);
       alert('Password updated!');
       onClose();
+      router.push('/sphere');
     } catch (err) {
       setError(err.message);
     } finally {
@@ -112,12 +130,25 @@ export function AuthModal({ isOpen, onClose }) {
     }
   };
 
+  // Reset state when modal closes
+  const handleClose = () => {
+    setStep('initial');
+    setMode('signin');
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+    setOtp('');
+    setError('');
+    setShowPass({});
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
-        <button onClick={onClose} className={styles.closeBtn}><X size={24} /></button>
+        <button onClick={handleClose} className={styles.closeBtn}><X size={24} /></button>
 
         {step === 'initial' && (
           <>
@@ -126,7 +157,12 @@ export function AuthModal({ isOpen, onClose }) {
               {mode !== 'reset' && (
                 <button onClick={async () => {
                   setLoading(true);
-                  try { await signInWithGoogle(); router.push('/sphere'); }
+                  try { 
+                    await signInWithGoogle(); 
+                    onClose();
+                    router.push('/sphere');
+                    router.refresh();
+                  }
                   catch { setError('Google failed'); }
                   finally { setLoading(false); }
                 }} className={styles.googleBtn}>
@@ -222,7 +258,7 @@ export function AuthModal({ isOpen, onClose }) {
               {loading ? 'Verifying...' : 'Verify'}
             </button>
             <p className={styles.resend}>
-              Didn’t get it?{' '}
+              Didn't get it?{' '}
               <button
                 onClick={async () => {
                   if (resendTimer > 0) return;

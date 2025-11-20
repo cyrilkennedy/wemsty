@@ -1,12 +1,15 @@
-import { useState, useEffect } from 'react';
+// components/ReactionBar.jsx - OPTIMIZED VERSION
+import { useState, useEffect, useRef } from 'react';
 import { Heart, Repeat2, Bookmark } from 'lucide-react';
 import { toggleLike } from '@/lib/reactions';
 import { toggleRepost } from '@/lib/repost';
 import { toggleBookmark } from '@/lib/bookmarks';
 import { getUserReactions } from '@/lib/reactions';
+import { useUser } from '@/hooks/useUser';
 import styles from './ReactionBar.module.css';
 
 export function ReactionBar({ postId, reactions = {}, postData = null }) {
+  const { user } = useUser();
   const [likes, setLikes] = useState(reactions.likes || 0);
   const [reposts, setReposts] = useState(reactions.reposts || 0);
   const [bookmarks, setBookmarks] = useState(reactions.bookmarks || 0);
@@ -17,8 +20,20 @@ export function ReactionBar({ postId, reactions = {}, postData = null }) {
   const [animating, setAnimating] = useState('');
   const [loaded, setLoaded] = useState(false);
 
-  // Load all user reactions at once
+  // Prevent double-clicks
+  const processingRef = useRef({
+    like: false,
+    repost: false,
+    bookmark: false
+  });
+
+  // Load user reactions once
   useEffect(() => {
+    if (!user) {
+      setLoaded(true);
+      return;
+    }
+
     let mounted = true;
 
     const loadReactions = async () => {
@@ -42,50 +57,79 @@ export function ReactionBar({ postId, reactions = {}, postData = null }) {
     return () => {
       mounted = false;
     };
-  }, [postId]);
+  }, [postId, user]);
 
+  // INSTANT RESPONSE - Optimistic updates
   const handleLike = async () => {
+    if (!user || processingRef.current.like) return;
+    
+    processingRef.current.like = true;
+    
+    // Update UI INSTANTLY
     const newVal = !isLiked;
     setIsLiked(newVal);
-    setLikes(l => newVal ? l + 1 : l - 1);
+    setLikes(l => newVal ? l + 1 : Math.max(0, l - 1));
     setAnimating('like');
+    setTimeout(() => setAnimating(''), 300);
     
+    // Then save to database in background
     try {
       await toggleLike(postId);
     } catch (err) {
       console.error('Like failed:', err);
+      // Revert on error
       setIsLiked(!newVal);
-      setLikes(l => newVal ? l - 1 : l + 1);
+      setLikes(l => newVal ? Math.max(0, l - 1) : l + 1);
+    } finally {
+      processingRef.current.like = false;
     }
-    
-    setTimeout(() => setAnimating(''), 300);
   };
 
   const handleRepost = async () => {
+    if (!user || processingRef.current.repost) return;
+    
+    processingRef.current.repost = true;
+    
+    // Update UI INSTANTLY
     const newVal = !isReposted;
     setIsReposted(newVal);
-    setReposts(r => newVal ? r + 1 : r - 1);
+    setReposts(r => newVal ? r + 1 : Math.max(0, r - 1));
     
+    // Save to database in background
     try {
-      await toggleRepost(postId);
+      const result = await toggleRepost(postId);
+      // Sync with actual result
+      setIsReposted(result);
     } catch (err) {
       console.error('Repost failed:', err);
+      // Revert on error
       setIsReposted(!newVal);
-      setReposts(r => newVal ? r - 1 : r + 1);
+      setReposts(r => newVal ? Math.max(0, r - 1) : r + 1);
+    } finally {
+      processingRef.current.repost = false;
     }
   };
 
   const handleBookmark = async () => {
+    if (!user || processingRef.current.bookmark) return;
+    
+    processingRef.current.bookmark = true;
+    
+    // Update UI INSTANTLY
     const newVal = !isBookmarked;
     setIsBookmarked(newVal);
-    setBookmarks(b => newVal ? b + 1 : b - 1);
+    setBookmarks(b => newVal ? b + 1 : Math.max(0, b - 1));
     
+    // Save to database in background
     try {
       await toggleBookmark(postId, postData);
     } catch (err) {
       console.error('Bookmark failed:', err);
+      // Revert on error
       setIsBookmarked(!newVal);
-      setBookmarks(b => newVal ? b - 1 : b + 1);
+      setBookmarks(b => newVal ? Math.max(0, b - 1) : b + 1);
+    } finally {
+      processingRef.current.bookmark = false;
     }
   };
 
@@ -94,7 +138,7 @@ export function ReactionBar({ postId, reactions = {}, postData = null }) {
       <button 
         onClick={handleLike} 
         className={`${styles.btn} ${isLiked ? styles.liked : ''}`}
-        disabled={!loaded}
+        disabled={!loaded || !user}
       >
         <div className={`${styles.icon} ${animating === 'like' ? styles.pulse : ''}`}>
           <Heart size={18} fill={isLiked ? 'currentColor' : 'none'} />
@@ -105,7 +149,7 @@ export function ReactionBar({ postId, reactions = {}, postData = null }) {
       <button 
         onClick={handleRepost} 
         className={`${styles.btn} ${isReposted ? styles.reposted : ''}`}
-        disabled={!loaded}
+        disabled={!loaded || !user}
       >
         <div className={styles.icon}>
           <Repeat2 size={18} />
@@ -116,7 +160,7 @@ export function ReactionBar({ postId, reactions = {}, postData = null }) {
       <button 
         onClick={handleBookmark} 
         className={`${styles.btn} ${isBookmarked ? styles.bookmarked : ''}`}
-        disabled={!loaded}
+        disabled={!loaded || !user}
       >
         <div className={styles.icon}>
           <Bookmark size={18} fill={isBookmarked ? 'currentColor' : 'none'} />
@@ -128,5 +172,7 @@ export function ReactionBar({ postId, reactions = {}, postData = null }) {
 }
 
 function format(n) {
-  return n >= 1000 ? (n / 1000).toFixed(1) + 'K' : n;
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+  return n;
 }

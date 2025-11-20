@@ -1,13 +1,31 @@
-// components/Avatar.jsx
+// src/components/Avatar.jsx
 import styles from './Avatar.module.css';
 
-export function Avatar({ src, size = 'md' }) {
-  const sizes = { sm: 'w-10 h-10', md: 'w-12 h-12', lg: 'w-20 h-20' };
+export function Avatar({ src, size = 'md', className = '' }) {
+  // Pixel-perfect sizes matching real X (2025)
+  const sizeMap = {
+    sm: '32px',   // rarely used
+    md: '48px',   // posts, replies, comments
+    lg: '80px',   // profile header
+  };
+
+  const pixelSize = sizeMap[size] || sizeMap.md;
+
   return (
-    <div className={`${styles.avatar} ${sizes[size]}`}>
-      <div className={styles.inner}>
-        {src ? <img src={src} alt="" /> : <div className={styles.fallback} />}
-      </div>
+    <div
+      className={`${styles.avatar} ${className}`.trim()}
+      style={{ width: pixelSize, height: pixelSize }}
+    >
+      {src ? (
+        <img
+          src={src}
+          alt="profile"
+          className={styles.img}
+          loading="lazy"
+        />
+      ) : (
+        <div className={styles.fallback} />
+      )}
     </div>
   );
 }
